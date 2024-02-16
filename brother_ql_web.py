@@ -5,7 +5,7 @@
 This is a web service to print labels on Brother QL label printers.
 """
 
-import sys, logging, random, json, argparse
+import sys, logging, random, json, argparse, subprocess, shlex
 from io import BytesIO
 
 from bottle import run, route, get, post, response, request, jinja2_view as view, static_file, redirect
@@ -216,6 +216,14 @@ def print_text():
 
     return_dict['success'] = True
     if DEBUG: return_dict['data'] = str(qlr.data)
+    return return_dict
+
+@get('/api/shutdown')
+def shutdown():
+    return_dict = {'success': False}
+    return_dict['success'] = True
+    cmd = shlex.split("sudo shutdown -h now");
+    subprocess.call(cmd)
     return return_dict
 
 def main():
